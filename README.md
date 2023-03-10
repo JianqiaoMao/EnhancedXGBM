@@ -1,5 +1,5 @@
 # EnhancedXGBM
-A enhanced XGBM by considering a loss function with higher order.
+An enhanced XGBM by considering a loss function with higher order.
 
 ## Update
 
