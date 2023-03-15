@@ -135,7 +135,7 @@ class TreeClassifier:
         self.expand_tree(cur_node.left)
         self.expand_tree(cur_node.right)
         
-    def search_prediction(self, node, x, mode):
+    def search_prediction(self, node, x):
         
         if node.left is None and node.right is None:
             return np.argmax(np.bincount(node.labels))
