@@ -7,23 +7,23 @@ Created on Wed Mar  8 15:24:40 2023
 
 import numpy as np
 
-class Node:
-    
-    def __init__(self, depth, data, labels):
-        
-        self.depth = depth
-        
-        self.data = data
-        self.labels = labels
-        
-        self.left = None
-        self.right = None
-        self.feature = None
-        self.value  = None
-
-#%%
+#%% CART classifier 
 
 class TreeClassifier:
+
+    class Node:
+        
+        def __init__(self, depth, data, labels):
+            
+            self.depth = depth
+            
+            self.data = data
+            self.labels = labels
+            
+            self.left = None
+            self.right = None
+            self.feature = None
+            self.value  = None
     
     def __init__(self, max_depth, max_gini_to_split, min_sample, num_bins):
         
@@ -106,8 +106,8 @@ class TreeClassifier:
                     best_left_X = left_X
                     best_right_X = right_X
                     
-        node.left = Node(node.depth+1, best_left_X, best_left_y)
-        node.right = Node(node.depth+1, best_right_X, best_right_y)
+        node.left = self.Node(node.depth+1, best_left_X, best_left_y)
+        node.right = self.Node(node.depth+1, best_right_X, best_right_y)
         
         self.feature_importance_[best_feature] += bestGini
         
@@ -118,7 +118,7 @@ class TreeClassifier:
         self.feature_importance_ = {}
         for i in range(self.X.shape[1]):
             self.feature_importance_[i] = 0
-        self.root = Node(depth = 0, data = self.X, labels = self.y)
+        self.root = self.Node(depth = 0, data = self.X, labels = self.y)
         
     def expand_tree(self, cur_node):
         
@@ -167,22 +167,23 @@ class cartClassifier:
     def predict(self, X):
         
         return  np.array([int(self.tree.predict(x)) for x in X])
-
-# from sklearn.datasets import load_iris
-# iris = load_iris()
-
-# # Get features and label
-# data = iris.data
-# feature_name = iris.feature_names
-# label = iris.target
-
-# cart_classifier = cartClassifier(max_depth = 6, max_gini_to_split = 1, min_sample = 2, num_bins = 20)
-# cart_classifier.fit(data, label)
-# pred = cart_classifier.predict(data)
-
-#%%
-
+    
+#%% CART regressor
 class TreeRegressor:
+
+    class Node:
+        
+        def __init__(self, depth, data, labels):
+            
+            self.depth = depth
+            
+            self.data = data
+            self.labels = labels
+            
+            self.left = None
+            self.right = None
+            self.feature = None
+            self.value  = None
     
     def __init__(self, max_depth, min_sq_error_to_split, min_sample, num_bins):
         
@@ -205,7 +206,6 @@ class TreeRegressor:
             return False
         
     def square_error(self, y):
-        size = y.shape[0]
         ave = np.mean(y)
         sq_err = np.sum((y-ave)**2)
         return sq_err
@@ -264,8 +264,8 @@ class TreeRegressor:
                     best_left_X = left_X
                     best_right_X = right_X
                     
-        node.left = Node(node.depth+1, best_left_X, best_left_y)
-        node.right = Node(node.depth+1, best_right_X, best_right_y)
+        node.left = self.Node(node.depth+1, best_left_X, best_left_y)
+        node.right = self.Node(node.depth+1, best_right_X, best_right_y)
         
         self.feature_importance_[best_feature] += bestSqErr
         
@@ -276,7 +276,7 @@ class TreeRegressor:
         self.feature_importance_ = {}
         for i in range(self.X.shape[1]):
             self.feature_importance_[i] = 0
-        self.root = Node(depth = 0, data = self.X, labels = self.y)
+        self.root = self.Node(depth = 0, data = self.X, labels = self.y)
         
     def expand_tree(self, cur_node):
         
@@ -327,19 +327,5 @@ class cartRegressor:
         
         return  np.array([self.tree.predict(x) for x in X])
  
-# from sklearn.datasets import load_iris
-# iris = load_iris()
-
-# # Get features and label
-# data = iris.data
-# feature_name = iris.feature_names
-# label = iris.target    
- 
-# cart_regressor = cartRegressor(max_depth = 5, min_sq_error_to_split =0.1, min_sample = 2, num_bins = 20)
-# cart_regressor.fit(data,label)  
-# pred =  cart_regressor.predict(data)
-
-
-
 
 
