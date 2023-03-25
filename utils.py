@@ -28,3 +28,11 @@ def plot_decision_boundary(model, x, y):
     plt.xlabel("x1")
     plt.ylabel("x2")
     plt.title("Decision Boundary of Binary Classification")
+
+def sigmoid(x):
+    
+    return 1/(1+np.e**(-x))
+
+    
+    
+    

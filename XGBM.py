@@ -5,7 +5,7 @@ Created on Wed Mar 22 15:45:26 2023
 @author: NickMao
 """
 import numpy as np
-
+from utils import sigmoid
 
 class xgbBaseTree:
     
@@ -183,9 +183,9 @@ class xgbTreeEstimator:
         return  np.array([self.tree.predict(x) for x in X])
 
 
-class XGboosting:
+class XGboostingClassifier:
     
-    def __init__(self, n_estimator, max_depth, min_sample, num_bins, min_score_gain, gamma, _lambda):
+    def __init__(self, n_estimator, max_depth, min_sample, num_bins, min_score_gain, gamma, _lambda, lr):
         
         self.n_estimator = n_estimator
         self.max_depth =  max_depth
@@ -194,8 +194,36 @@ class XGboosting:
         self.min_score_gain = min_score_gain
         self.gamma = gamma
         self._lamda = _lambda
+        self.lr = lr
+        self.model = []
         
-
-
-
+    def coef_cal(self, y, y_hat):
+        
+        g = 1/(1+np.e**(-y_hat))-y
+        h = np.e**y_hat / ((1+np.e**y_hat)**2)
+        
+        return g, h
+    
+    def fit(self, X, y):
+        
+        y_hat = np.array([float(0) for i in range(y.shape[0])])    
+        
+        for k in range(self.n_estimator):
+            
+            g, h = self.coef_cal(y, y_hat)
+            
+            tree_k = xgbTreeEstimator(max_depth = self.max_depth, min_sample = self.min_sample, 
+                                      num_bins = self.num_bins, min_score_gain = self.min_score_gain)
+            tree_k.fit(X, g, h)
+            self.model.append(tree_k)
+            
+            y_hat += (self.lr**k)*tree_k.predict(X) 
+    
+    def predict(self, X):
+        
+        pred = np.sum(np.array([(self.lr**i)*self.model[i].predict(X) for i in range(self.n_estimator)]), axis = 0)
+        pred = np.round(sigmoid(pred)).astype(int)
+        
+        return pred
+        
 
